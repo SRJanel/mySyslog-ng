@@ -1,0 +1,12 @@
+---
+- hosts: siemsyslog
+  remote_user: ansible
+  become: yes
+  become_method: sudo
+  vars_files:
+    - global_vars.yml
+    - soc_streams.yml
+  roles:
+    - { role: . }
+  # roles:
+  #   - mysyslog-ng

@@ -1,0 +1,89 @@
+## Sets in main dict full config paths for each stream.
+## This step is not really needed, but it might be usefull to debug if needed
+- name: Update stream dict with configs full paths
+  no_log: True
+  set_fact:
+    soc_streams_properties: "{{ soc_streams_properties | combine(whitelist_fullpath, recursive=True) }}"
+  vars:
+    whitelist_fullpath: "{ '{{ item.key }}': {
+    			   'config_file': '{{ syslog_path }}/conf.d/{{ item.key }}.conf'
+			  } }"
+  with_dict: "{{ soc_streams_properties }}"
+
+
+## Declares and puts 'default' in whitelist value if not present in stream definition.
+## This whitelist value is later combined with the syslog_path and some other strings
+## and gives something similar: /etc/syslog-ng/whitelists/f_whitelist_stream-name.txt
+## The combination with the other variable and string happens later because this dict
+## value needs to stay intact, as one of the first steps before deploying the whitelist
+## is to check if declared whitelist exists on localhost, therefore we cannot have a
+## path starting with '/etc/syslog-ng/' which essentially represents the target path.
+## The whitelist 'f_whitelist_default.txt' is file present on localhost that essentially
+## blacklist all incoming logs as it is empty.
+## This step is not really needed, but it mgiht be usefull to debug if needed and also
+## avoids doing extra actions later in syslog-ng_config.yml.
+- name: Update stream dict with whitelist default value if field not declared
+  no_log: True
+  set_fact:
+    soc_streams_properties: "{{ soc_streams_properties | combine(whitelist_value, recursive=True) }}"
+  vars:
+    whitelist_value: "{ '{{ item.key }}': {
+    		      'whitelist': '{{ item.value.whitelist | default('default') }}'
+		      } }"
+  with_dict: "{{ soc_streams_properties }}"
+
+
+## Updates main stream dict with the field template and the value 'default' if field is not declared
+## This step is not really needed, but it mgiht be usefull to debug if needed and also
+## avoids doing extra actions later in syslog-ng_config.yml.
+- name: Update stream dict with template default value if field not declared
+  no_log: True
+  set_fact:
+    soc_streams_properties: "{{ soc_streams_properties | combine(template_value, recursive=True) }}"
+  vars:
+    template_value: "{ '{{ item.key }}': {
+    		      'template': '{{ item.value.template | default('default') }}'
+		      } }"
+  with_dict: "{{ soc_streams_properties }}"
+
+
+## Updates main stream dict with the field splunk_index and as value the name of the stream as declared
+## if the field splunk_index is not declared.
+## This step is not really needed, but it mgiht be usefull to debug if needed and also
+## avoids doing extra actions later in syslog-ng_config.yml.
+- name: Update stream dict with splunk_index default values if field not declared
+  no_log: True
+  set_fact:
+    soc_streams_properties: "{{ soc_streams_properties | combine(splunk_index, recursive=True) }}"
+  vars:
+    splunk_index: "{ '{{ item.key }}': {
+    		      'splunk_index': '{{ item.value.splunk_index | default(item.key) }}'
+		      } }"
+  with_dict: "{{ soc_streams_properties }}"
+
+
+## Builds a list of all the configs that are declared in the stream dict.
+## This list is used to delete afterwards all files and directories not present in this list.
+- name: Build list of managed configs
+  set_fact:
+    managed_configs: "{{ managed_configs | default([]) + [ config_file ] }}"
+  vars:
+    config_file: "{{ item.value.config_file }}"
+  with_dict: "{{ soc_streams_properties }}"
+
+
+## Builds a list of all the whitelists that are declared in the stream dict.
+## This list is used to delete afterwards all files and directories not present in this list.
+- name: Build list of managed whitelists
+  set_fact:
+    managed_whitelists: "{{ managed_whitelists
+    			| default([]) + [ syslog_whitelists_path + '/f_whitelist_' + whitelist + '.txt' ] }}"
+  vars:
+    whitelist: "{{ item.value.whitelist | default('default') }}"
+  with_dict: "{{ soc_streams_properties }}"
+
+
+## Debug stream properties dictionnary
+- name: DEBUG| Print updated dict containing streams properties
+  debug:
+   msg: "{{ soc_streams_properties }}"

@@ -1,0 +1,78 @@
+##########################################################
+#### Remove all configuration and whitelist files not ####
+#### implicitly or explicitly declared in streams.    ####
+##########################################################
+- name: Get list of all config files recursively on server
+  find:
+    path: "{{ syslog_configs_path }}"
+    file_type: any
+    recurse: yes
+  register: all_objects
+
+- name: Get list of all whitelist files recursively on server
+  find:
+    path: "{{ syslog_whitelists_path }}"
+    file_type: any
+    recurse: yes
+  register: all_objects_under_whitelist
+
+- name: Delete all unmanaged files and directories
+  file: path="{{ item.path }}" state=absent
+  with_items: "{{ all_objects['files'] }}"
+  when: item.path not in managed_configs
+
+- name: Delete all unmanaged files and directories
+  file: path="{{ item.path }}" state=absent
+  with_items: "{{ all_objects_under_whitelist['files'] }}"
+  when: item.path not in managed_whitelists
+
+
+##########################################################
+#### Deploy Filters (whitelists)                      ####
+##########################################################
+- name: Ensure all whitelists are at the latest version
+  copy:
+    src: "{{ whitelist_src_filename }}"
+    dest: "/etc/syslog-ng/whitelists/"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  vars:
+    whitelist_src_filename: "whitelists/f_whitelist_{{ item.value.whitelist | default('default') }}.txt"
+  with_dict: "{{ soc_streams_properties }}"
+  notify:
+    - Reload syslog-ng
+
+
+##########################################################
+#### Deploy main syslog config file                   ####
+#### This file calls all configs present in conf.d/   ####
+##########################################################
+- name: Ensure main syslog-ng.conf file is at the latest version
+  copy:
+    src: "syslog-ng.conf"
+    dest: "/etc/syslog-ng/syslog-ng.conf"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  notify:
+    - Reload syslog-ng
+
+
+##########################################################
+#### Deploy each stream configs                       ####
+#### Deploys in conf.d/ folder                        ####
+##########################################################
+- name: Ensure all conf.d/*.conf files are at the latest version
+  template:
+    src: "soc_streams/{{ item.value.template }}.conf.j2"
+    dest: "/etc/syslog-ng/conf.d/{{ item.key }}.conf"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  vars:
+    stream_properties: "{{ item.value }}"
+    ###    stream_target: "{{ item.value.deploy_hosts }}"
+  with_dict: "{{ soc_streams_properties }}"
+  notify:
+    - Restart syslog-ng

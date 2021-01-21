@@ -1,0 +1,49 @@
+##### Default Template
+##### For stream '{{ stream_properties.splunk_index }}'
+##### TCP/{{ stream_properties.port }}
+
+##
+## Source
+##
+source s_{{ stream_properties.splunk_index }} {
+  {% if stream_properties.protocol == 'all' %}
+
+  syslog(transport(tcp) port({{ stream_properties.port }}));
+  syslog(transport(udp) port({{ stream_properties.port }}));
+  {% else %}
+  syslog(transport({{ stream_properties.protocol }}) port({{ stream_properties.port }}));       
+  {% endif %}
+
+};
+
+
+##
+## Filter (whitelist / blacklist)
+##
+filter f_whitelist_{{ stream_properties.splunk_index }} {
+  in-list("{{ syslog_whitelists_path }}/f_whitelist_{{ stream_properties.whitelist }}.txt", value("HOST"));
+};
+
+
+# filter f_blacklist_{{ stream_properties.splunk_index }} {
+#       not filter(f_whitelist_{{ stream_properties.splunk_index }});
+# };
+
+
+##
+## Destination
+##
+destination d_{{ stream_properties.splunk_index }} {
+  file("{{ syslog_logs_path }}/{{ stream_properties.splunk_index }}.log"
+    owner(splunk) group(splunk) perm(0600) dir_perm(0700) create_dirs(yes)
+  );
+};
+
+##
+## Log association (source / filter / destination)
+##
+log {
+    source(s_{{ stream_properties.splunk_index }});
+    filter(f_whitelist_{{ stream_properties.splunk_index }});
+    destination(d_{{ stream_properties.splunk_index }});
+};
