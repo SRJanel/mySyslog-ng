@@ -1,5 +1,5 @@
 ---
 syslog_path: "/etc/syslog-ng"
-syslog_configs_path: "{{ syslog_path }}/conf.d"
-syslog_whitelists_path: "{{ syslog_path }}/whitelists"
-syslog_logs_path: "/opt/syslog-ng/logs"
+syslog_path_configs: "{{ syslog_path }}/conf.d"
+syslog_path_whitelists: "{{ syslog_path }}/whitelists"
+syslog_path_logs: "/opt/syslog-ng/logs"

@@ -20,7 +20,7 @@ source s_{{ stream_properties.splunk_index }} {
 ## Filter (whitelist / blacklist)
 ##
 filter f_whitelist_{{ stream_properties.splunk_index }} {
-  in-list("{{ syslog_whitelists_path }}/f_whitelist_{{ stream_properties.whitelist }}.txt", value("HOST"));
+  in-list("{{ syslog_path_whitelists }}/f_whitelist_{{ stream_properties.whitelist }}.txt", value("HOST"));
 };
 
 # filter f_blacklist_{{ stream_properties.splunk_index }} {
@@ -33,7 +33,7 @@ filter f_whitelist_{{ stream_properties.splunk_index }} {
 ##
 destination d_{{ stream_properties.splunk_index }} {
   # tcp(127.0.0.1 port(4244) persist-name("{{ stream_properties.splunk_index }}"));
-  file("{{ syslog_logs_path }}/{{ stream_properties.splunk_index }}.log"
+  file("{{ syslog_path_logs }}/{{ stream_properties.splunk_index }}.log"
     owner(splunk) group(splunk) perm(0600) dir_perm(0700) create_dirs(yes)
   );
 };

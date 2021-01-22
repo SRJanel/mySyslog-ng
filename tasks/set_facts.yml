@@ -77,7 +77,7 @@
 - name: Build list of managed whitelists
   set_fact:
     managed_whitelists: "{{ managed_whitelists
-    			| default([]) + [ syslog_whitelists_path + '/f_whitelist_' + whitelist + '.txt' ] }}"
+    			| default([]) + [ syslog_path_whitelists + '/f_whitelist_' + whitelist + '.txt' ] }}"
   vars:
     whitelist: "{{ item.value.whitelist | default('default') }}"
   with_dict: "{{ soc_streams_properties }}"

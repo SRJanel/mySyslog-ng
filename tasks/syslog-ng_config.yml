@@ -4,14 +4,14 @@
 ##########################################################
 - name: Get list of all config files recursively on server
   find:
-    path: "{{ syslog_configs_path }}"
+    path: "{{ syslog_path_configs }}"
     file_type: any
     recurse: yes
   register: all_objects
 
 - name: Get list of all whitelist files recursively on server
   find:
-    path: "{{ syslog_whitelists_path }}"
+    path: "{{ syslog_path_whitelists }}"
     file_type: any
     recurse: yes
   register: all_objects_under_whitelist
