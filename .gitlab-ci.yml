@@ -12,6 +12,7 @@ before_script:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - ssh-keyscan -H 'mysyslogtest.ether.local' >> ~/.ssh/known_hosts
+    - ssh-keyscan -H '10.0.0.90' >> ~/.ssh/known_hosts
 
 Ansible playbook lint:
     stage: testing
