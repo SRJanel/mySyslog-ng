@@ -2,7 +2,8 @@ image:
     name: williamyeh/ansible:debian9
 
 stages:
-    - deploy_dev
+    - testing
+    - deploy
 
 before_script:
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -12,7 +13,17 @@ before_script:
     - chmod 700 ~/.ssh
     - ssh-keyscan -H 'mysyslogtest.ether.local' >> ~/.ssh/known_hosts
 
-testing:
-    stage: deploy_dev
+Ansible playbook lint:
+    stage: testing
     script:
-        - ansible-playbook -i hosts mysyslog.yml -vv
+       - echo "todo"
+
+Deploy to dev:
+    stage: deploy
+    script:
+        - ansible-playbook -i inventories/dev/hosts mysyslog.yml -vv
+
+Deploy to prod:
+    stage: deploy
+    script:
+        - ansible-playbook -i inventories/prod/hosts mysyslog.yml -vv
