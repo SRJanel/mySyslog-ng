@@ -1,0 +1,14 @@
+image:
+    name: williamyeh/ansible:debian9
+
+stages:
+    - deploy_dev
+
+before_script:
+    - echo "test"
+
+
+testing:
+    stage: deploy_dev
+    script:
+        - ansible-playbook -i hosts mysyslog.yml -vv
