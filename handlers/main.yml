@@ -5,11 +5,9 @@
     name: syslog-ng
     state: reloaded
   listen: "Reload syslog-ng"
-  throttle: 1
 
 - name: Restart syslog-ng
   systemd:
     name: syslog-ng
     state: restarted
   listen: "Restart syslog-ng"
-  throttle: 1
