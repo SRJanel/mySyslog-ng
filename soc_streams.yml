@@ -17,4 +17,8 @@ soc_streams_properties:
   babar2:
     port: 4242
     protocol: all
+  intruder:
+    port: 4242
+    protocol: all
+
 #    deploy_hosts: mysiem
