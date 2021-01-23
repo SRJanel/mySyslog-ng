@@ -20,7 +20,7 @@ Ansible playbook lint:
        - echo "todo"
 
 Deploy to dev:
-    stage: deploy
+    stage: testing
     script:
         - ansible-playbook -i inventories/dev/hosts mysyslog.yml -vv
 
