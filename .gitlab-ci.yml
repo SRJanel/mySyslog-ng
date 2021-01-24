@@ -18,7 +18,7 @@ stages:
         - echo "${SSH_PRIVATE_KEY}" | base64 -d | ssh-add - > /dev/null     # var protected + masked
         - mkdir -p ~/.ssh
         - chmod 700 ~/.ssh
-	- cat ./inventories/*/hosts | grep -v -e \# -e '\[' | xargs ssh-keyscan -H >> ~/.ssh/known_hosts
+        - cat ./inventories/*/hosts | grep -v -e \# -e '\[' | xargs ssh-keyscan -H >> ~/.ssh/known_hosts
 
 Ansible Lint:
     stage: testing
