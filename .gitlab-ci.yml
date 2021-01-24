@@ -18,12 +18,12 @@ stages:
         - echo "${SSH_PRIVATE_KEY}" | base64 -d | ssh-add - > /dev/null     # var protected + masked
         - mkdir -p ~/.ssh
         - chmod 700 ~/.ssh
-        - ssh-keyscan -H 'mysyslogtest.ether.local' >> ~/.ssh/known_hosts   # do for all hosts at once
-        - ssh-keyscan -H '10.0.0.90' >> ~/.ssh/known_hosts                  # do for all hosts at once
+	- cat ./inventories/*/hosts | grep -v -e \# -e '\[' | xargs ssh-keyscan -H >> ~/.ssh/known_hosts
 
 Ansible Lint:
     stage: testing
     extends: .before_script_ansible-lint_template
+    allow_failure: true
     script:
     - ansible-lint .
 
