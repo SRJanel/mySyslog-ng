@@ -1,13 +1,9 @@
 # tasks file for mysyslog-ng
 ---
-# - import_tasks: install.yml
-#   tags:
-#     - install
-
 - import_tasks: set_facts.yml
   tags:
     - configuration
-    
+
 - import_tasks: syslog-ng_config.yml
   tags:
     - configuration

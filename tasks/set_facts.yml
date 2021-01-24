@@ -6,8 +6,8 @@
     soc_streams_properties: "{{ soc_streams_properties | combine(whitelist_fullpath, recursive=True) }}"
   vars:
     whitelist_fullpath: "{ '{{ item.key }}': {
-    			   'config_file': '{{ syslog_path }}/conf.d/{{ item.key }}.conf'
-			  } }"
+                          'config_file': '{{ syslog_path }}/conf.d/{{ item.key }}.conf'
+                         } }"
   with_dict: "{{ soc_streams_properties }}"
 
 
@@ -28,8 +28,8 @@
     soc_streams_properties: "{{ soc_streams_properties | combine(whitelist_value, recursive=True) }}"
   vars:
     whitelist_value: "{ '{{ item.key }}': {
-    		      'whitelist': '{{ item.value.whitelist | default('default') }}'
-		      } }"
+                       'whitelist': '{{ item.value.whitelist | default('default') }}'
+                      } }"
   with_dict: "{{ soc_streams_properties }}"
 
 
@@ -42,8 +42,8 @@
     soc_streams_properties: "{{ soc_streams_properties | combine(template_value, recursive=True) }}"
   vars:
     template_value: "{ '{{ item.key }}': {
-    		      'template': '{{ item.value.template | default('default') }}'
-		      } }"
+                      'template': '{{ item.value.template | default('default') }}'
+                     } }"
   with_dict: "{{ soc_streams_properties }}"
 
 
@@ -57,8 +57,8 @@
     soc_streams_properties: "{{ soc_streams_properties | combine(splunk_index, recursive=True) }}"
   vars:
     splunk_index: "{ '{{ item.key }}': {
-    		      'splunk_index': '{{ item.value.splunk_index | default(item.key) }}'
-		      } }"
+                    'splunk_index': '{{ item.value.splunk_index | default(item.key) }}'
+                    } }"
   with_dict: "{{ soc_streams_properties }}"
 
 
@@ -77,7 +77,7 @@
 - name: Build list of managed whitelists
   set_fact:
     managed_whitelists: "{{ managed_whitelists
-    			| default([]) + [ syslog_path_whitelists + '/f_whitelist_' + whitelist + '.txt' ] }}"
+                            | default([]) + [ syslog_path_whitelists + '/f_whitelist_' + whitelist + '.txt' ] }}"
   vars:
     whitelist: "{{ item.value.whitelist | default('default') }}"
   with_dict: "{{ soc_streams_properties }}"
