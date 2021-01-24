@@ -5,29 +5,36 @@ stages:
     - testing
     - deploy
 
-before_script:
-    - apt update
-    - apt install -y python-pip
-    - pip install ansible-lint
-    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - echo "${SSH_PRIVATE_KEY}" | base64 -d | ssh-add - > /dev/null	#var protected + masked
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - ssh-keyscan -H 'mysyslogtest.ether.local' >> ~/.ssh/known_hosts
-    - ssh-keyscan -H '10.0.0.90' >> ~/.ssh/known_hosts
+.before_script_ansible-lint_template:
+    before_script:
+        - apt update
+        - apt install -y python-pip
+        - pip install ansible-lint
+
+.before_script_deployment_template:
+    before_script:
+        - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+        - eval $(ssh-agent -s)
+        - echo "${SSH_PRIVATE_KEY}" | base64 -d | ssh-add - > /dev/null     # var protected + masked
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+        - ssh-keyscan -H 'mysyslogtest.ether.local' >> ~/.ssh/known_hosts   # do for all hosts at once
+        - ssh-keyscan -H '10.0.0.90' >> ~/.ssh/known_hosts                  # do for all hosts at once
 
 Ansible Lint:
     stage: testing
+    extends: .before_script_ansible-lint_template
     script:
     - ansible-lint .
 
 Deploy to dev:
     stage: testing
+    extends: .before_script_deployment_template
     script:
         - ansible-playbook -i inventories/dev/hosts mysyslog.yml -vv
 
 Deploy to prod:
     stage: deploy
+    extends: .before_script_deployment_template
     script:
         - ansible-playbook -i inventories/prod/hosts mysyslog.yml -vv
