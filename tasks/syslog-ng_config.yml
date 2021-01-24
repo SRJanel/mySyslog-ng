@@ -75,4 +75,29 @@
     ###    stream_target: "{{ item.value.deploy_hosts }}"
   with_dict: "{{ soc_streams_properties }}"
   notify:
-    - Restart syslog-ng
+    - Reload syslog-ng
+
+
+##########################################################
+#### ==Surviving failures==                           ####
+#### If reloading syslog-ng fails while deploying on  ####
+#### dev, upon a second execution of the playbook     ####
+#### without performing any changes on files will say ####
+#### 'changes=0' and syslog-ng service will have      ####
+#### stayed with old state (stopped). The playbook    ####
+#### will not restart any service because there will  ####
+#### be no change in the files and it will say that   ####
+#### it has succeeded even though it should not! This ####
+#### can be problematic if we are using a pipeline    ####
+#### (i.e. gitlab-ci) as the pipeline might           ####
+#### essentially deploy to production a wrong         ####
+#### configuration if runned twice in a row! To avoid ####
+#### this, the following tasks will try to start the  ####
+#### service if not already started.                  ####
+##########################################################
+- name: Trigger idempotent handler (restart syslog-ng)
+  debug:
+    msg: "Triggering syslog-ng service restart no matter what to survive failures"
+  changed_when: True
+  notify:
+    - Reload syslog-ng
