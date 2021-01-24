@@ -18,7 +18,7 @@ soc_streams_properties:
     port: 4242
     protocol: all
   intruder:
-    port: 4242
+    port: 4249
     protocol: all
 
 #    deploy_hosts: mysiem
