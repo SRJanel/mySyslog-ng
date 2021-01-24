@@ -7,7 +7,7 @@ stages:
 
 before_script:
     - apt update
-    - apt install python-pip
+    - apt install -y python-pip
     - pip install ansible-lint
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
