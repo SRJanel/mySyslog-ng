@@ -17,10 +17,10 @@ before_script:
     - ssh-keyscan -H 'mysyslogtest.ether.local' >> ~/.ssh/known_hosts
     - ssh-keyscan -H '10.0.0.90' >> ~/.ssh/known_hosts
 
-Ansible playbook lint:
+Lint Ansible:
     stage: testing
     script:
-       - echo "todo"
+    - ansible-lint .
 
 Deploy to dev:
     stage: testing
