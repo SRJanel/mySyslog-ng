@@ -1,7 +1,7 @@
 ---
 # handlers file for mysyslog-ng
 - name: Ensure the config syntax is correct
-  shell: "/usr/sbin/syslog-ng -s -f {{ syslog_path }}/syslog-ng.conf"
+  command: "/usr/sbin/syslog-ng -s -f {{ syslog_path }}/syslog-ng.conf"
   register: syntax_check
   failed_when: "syntax_check.rc != 0 or 'Error' in syntax_check.stderr"
   listen: "Reload syslog-ng"
