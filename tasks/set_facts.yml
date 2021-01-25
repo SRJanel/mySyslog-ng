@@ -18,7 +18,7 @@
 ## value needs to stay intact, as one of the first steps before deploying the whitelist
 ## is to check if declared whitelist exists on localhost, therefore we cannot have a
 ## path starting with '/etc/syslog-ng/' which essentially represents the target path.
-## The whitelist 'f_whitelist_default.txt' is file present on localhost that essentially
+## The whitelist 'f_whitelist_default.txt' is a file present on localhost that essentially
 ## blacklist all incoming logs as it is empty.
 ## This step is not really needed, but it mgiht be usefull to debug if needed and also
 ## avoids doing extra actions later in syslog-ng_config.yml.
@@ -63,7 +63,7 @@
 
 
 ## Builds a list of all the configs that are declared in the stream dict.
-## This list is used to delete afterwards all files and directories not present in this list.
+## This list is used to delete afterwards all files and directories on target which are not present in this list.
 - name: Build list of managed configs
   set_fact:
     managed_configs: "{{ managed_configs | default([]) + [ config_file ] }}"
@@ -84,6 +84,7 @@
 
 
 ## Debug stream properties dictionnary
+## (Shows what we updated on the previous tasks via set_fact)
 - name: DEBUG| Print updated dict containing streams properties
   debug:
    msg: "{{ soc_streams_properties }}"

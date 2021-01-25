@@ -16,12 +16,12 @@
     recurse: yes
   register: all_objects_under_whitelist
 
-- name: Delete all unmanaged files and directories
+- name: Delete all unmanaged files and directories in {{ syslog_path_configs }}
   file: path="{{ item.path }}" state=absent
   with_items: "{{ all_objects['files'] }}"
   when: item.path not in managed_configs
 
-- name: Delete all unmanaged files and directories
+- name: Delete all unmanaged files and directories in {{ syslog_path_whitelists }}
   file: path="{{ item.path }}" state=absent
   with_items: "{{ all_objects_under_whitelist['files'] }}"
   when: item.path not in managed_whitelists
@@ -99,8 +99,8 @@
 #### will instead just discard the new config and     ####
 #### will stay up. Although if the state of the       ####
 #### service is down, it will try to start it AND it  ####
-#### will fail ! We do a reload here and restart as   ####
-#### it is a much softer action and can get us the    ####
+#### will fail ! We do a reload here and not restart  ####
+#### as it is a much softer action and can get us the ####
 #### result we want if the service is already down.   ####
 ##########################################################
 - debug:
