@@ -1,24 +1,21 @@
 ---
-
 soc_streams_properties:
   er_x:
-    port: 7777
+    port: 2000
     protocol: udp
-    filter: false
     template: default
     whitelist: "er_x_custom_one"
     splunk_index: "ether_ER-X"
-  babar:
-    port: 3117
+  bu_techno_constructor:
+    port: 2001
     protocol: tcp
-    filter: true
     whitelist: "babar2"
     template: tls
-  babar2:
-    port: 4242
+  bu_firewall_paloalto:
+    port: 2002
     protocol: all
-  intruder:
-    port: 4249
-    protocol: all
+  # intruder:
+  #   port: 2002
+  #   protocol: all
 
 #    deploy_hosts: mysiem
