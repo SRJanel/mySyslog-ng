@@ -56,7 +56,7 @@
     group: "root"
     mode: 0644
   notify:
-    - Reload syslog-ng
+    - Restart syslog-ng
 
 
 ##########################################################
@@ -75,7 +75,7 @@
     ###    stream_target: "{{ item.value.deploy_hosts }}"
   with_dict: "{{ soc_streams_properties }}"
   notify:
-    - Reload syslog-ng
+    - Restart syslog-ng
 
 
 ##########################################################
@@ -94,10 +94,17 @@
 #### configuration if runned twice in a row! To avoid ####
 #### this, the following tasks will try to start the  ####
 #### service if not already started.                  ####
+#### Reloading will not make the service crash if the ####
+#### service is up even if the config is wrong. It    ####
+#### will instead just discard the new config and     ####
+#### will stay up. Although if the state of the       ####
+#### service is down, it will try to start it AND it  ####
+#### will fail ! We do a reload here and restart as   ####
+#### it is a much softer action and can get us the    ####
+#### result we want if the service is already down.   ####
 ##########################################################
-- name: Trigger idempotent handler (restart syslog-ng)
-  debug:
-    msg: "Triggering syslog-ng service restart no matter what to survive failures"
+- debug:
+    msg: "Triggering syslog-ng service reload no matter what to survive failures"
   changed_when: True
   notify:
     - Reload syslog-ng

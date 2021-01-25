@@ -4,10 +4,16 @@
   command: "/usr/sbin/syslog-ng -s -f {{ syslog_path }}/syslog-ng.conf"
   register: syntax_check
   failed_when: "syntax_check.rc != 0 or 'Error' in syntax_check.stderr"
-  listen: "Reload syslog-ng"
+  listen: "Restart syslog-ng"
 
 - name: Reload syslog-ng
   systemd:
     name: syslog-ng
     state: reloaded
   listen: "Reload syslog-ng"
+
+- name: Restart syslog-ng
+  systemd:
+    name: syslog-ng
+    state: restarted
+  listen: "Restart syslog-ng"
