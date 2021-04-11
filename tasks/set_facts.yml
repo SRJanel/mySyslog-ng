@@ -1,5 +1,4 @@
 ## Sets in main dict full config paths for each stream.
-## This step is not really needed, but it might be usefull to debug if needed
 - name: Update stream dict with configs full paths
   no_log: True
   set_fact:
@@ -33,6 +32,20 @@
   with_dict: "{{ soc_streams_properties }}"
 
 
+## XXXXXXXXXXXXX
+- name: Update stream dict with deploy_hosts default value if field not declared or defined
+#  no_log: True
+  set_fact:
+#    soc_streams_properties: "{{ soc_streams_properties | combine(deploy_hosts_value, recursive=True) }}"
+    soc_streams_properties: "{{ soc_streams_properties | ('{' + (deploy_hosts_value | map('regex_replace', '(.*):(.*)', '\"\\1\":\"\\2\"') | join(',')) + '}') | from_json }}"
+
+  vars:
+    deploy_hosts_value: "{ '{{ item.key }}': {
+                          'deploy_hosts': '{{ item.value.deploy_hosts | default('NO_VALUE_THEREFORE_WILL_NOT_DEPLOY') }}'
+                         } }"
+  with_dict: "{{ soc_streams_properties }}"
+
+
 ## Updates main stream dict with the field template and the value 'default' if field is not declared
 ## This step is not really needed, but it mgiht be usefull to debug if needed and also
 ## avoids doing extra actions later in syslog-ng_config.yml.
@@ -62,6 +75,7 @@
   with_dict: "{{ soc_streams_properties }}"
 
 
+##### BUILD CONFIGS #####
 ## Builds a list of all the configs that are declared in the stream dict.
 ## This list is used to delete afterwards all files and directories on target which are not present in this list.
 - name: Build list of managed configs
@@ -69,9 +83,16 @@
     managed_configs: "{{ managed_configs | default([]) + [ config_file ] }}"
   vars:
     config_file: "{{ item.value.config_file }}"
+  when: inventory_hostname in item.value.deploy_hosts
   with_dict: "{{ soc_streams_properties }}"
 
+# ## Debug managed_configs
+# - name: DEBUG managed_configs
+#   debug:
+#     msg: "{{ managed_configs }}"
 
+
+##### BUILD WHITELISTS #####
 ## Builds a list of all the whitelists that are declared in the stream dict.
 ## This list is used to delete afterwards all files and directories not present in this list.
 - name: Build list of managed whitelists
@@ -80,11 +101,13 @@
                             | default([]) + [ syslog_path_whitelists + '/f_whitelist_' + whitelist + '.txt' ] }}"
   vars:
     whitelist: "{{ item.value.whitelist | default('default') }}"
+  when: inventory_hostname in item.value.deploy_hosts
   with_dict: "{{ soc_streams_properties }}"
 
 
+##### DEBUG FINAL DICT #####
 ## Debug stream properties dictionnary
 ## (Shows what we updated on the previous tasks via set_fact)
 - name: DEBUG| Print updated dict containing streams properties
   debug:
-   msg: "{{ soc_streams_properties }}"
+    msg: "{{ soc_streams_properties }}"

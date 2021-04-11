@@ -40,6 +40,7 @@
   vars:
     whitelist_src_filename: "whitelists/f_whitelist_{{ item.value.whitelist | default('default') }}.txt"
   with_dict: "{{ soc_streams_properties }}"
+  when: inventory_hostname in item.value.deploy_hosts
   notify:
     - Reload syslog-ng
 
@@ -72,7 +73,7 @@
     mode: 0644
   vars:
     stream_properties: "{{ item.value }}"
-    ###    stream_target: "{{ item.value.deploy_hosts }}"
+  when: inventory_hostname in item.value.deploy_hosts
   with_dict: "{{ soc_streams_properties }}"
   notify:
     - Restart syslog-ng
