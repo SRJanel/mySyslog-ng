@@ -1,21 +1,32 @@
 ---
 soc_streams_properties:
-  er_x:
+  my_frontal_firewall:
     port: 2000
     protocol: udp
     template: default
-    whitelist: "er_x_custom_one"
+    whitelist: "my_er_x"
     splunk_index: "ether_ER-X"
-  bu_techno_constructor:
+    deploy_hosts:
+      - mysyslogprod1.ether.local
+  my_winservers:
     port: 2001
+#    protocol: all
     protocol: tcp
-    whitelist: "babar2"
+    whitelist: "my_winservers_2019"
     template: tls
-  bu_firewall_paloalto:
+    deploy_hosts:
+      - mysyslogprod1.ether.local
+      - mysyslogprod2.ether.local
+  my_main_computer_nxlog:
     port: 2002
-    protocol: all
-  # intruder:
-  #   port: 2002
-  #   protocol: all
+    protocol: tcp
+    whitelist: "my_main_computer"
+    deploy_hosts:
+      - mysyslogprod2.ether.local
+  my_main_computer_sysmon_winlogbeat:
+    port: 2003
+    protocol: tcp
+    whitelist: "my_main_computer"
+    deploy_hosts:
+      - mysyslogprod2.ether.local
 
-#    deploy_hosts: mysiem
