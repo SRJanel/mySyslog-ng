@@ -1,38 +1,26 @@
-Role Name
-=========
+mySyslog-ng
+===========
 
-A brief description of the role goes here.
+A tool that I wrote to easily configure my syslog servers in front of my SIEM at home.
+Still need to fix a few stuff though...
 
-Requirements
-------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Allows to easily write configurations. For each configuration can:
+- assign 2 templates "default" and "tls"
+- choose the protocol of the incoming traffic
+- choose a port for the incoming traffic
+- apply a custom whitelist/lookup on hosts that send traffic (needs one otherwise traffic is sinkholed)
+- choose on which servers each configuration should be applied (removes the configuration on target host if target is removed from deploy_hosts).
 
-Role Variables
---------------
+I personally used it with my gitlab internally (a CD pipeline is present in this repo; commit your changes made to the soc_stream.yml file and gitlab will auto-deploy to your hosts. I am also using a dev environment so that my configs are automatically applied in production only if they can be applied first in dev).
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+(Remember to change inventories/[dev/prod]/hosts files)
+syslog-ng is supposed to be already installed on target servers (for now at least).
 
-Dependencies
-------------
+**c.f. soc_streams.yml for examples...**
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+// TODO: Review README, write more stuff, give examples on how it works etc.
+// TODO: Fix Bug: Ignore 'deploy_hosts' dict when deploying to dev environment..
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Dev: deploy on single host (requires to use unique ports across all configurations)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Prod: all good, leave it as it is..
