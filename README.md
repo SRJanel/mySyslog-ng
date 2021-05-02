@@ -17,10 +17,10 @@ I personally used it with my gitlab internally (a CD pipeline is present in this
 (Remember to change inventories/[dev/prod]/hosts files)
 syslog-ng is supposed to be already installed on target servers (for now at least).
 
-**c.f. soc_streams.yml for examples...**
+--> **c.f. soc_streams.yml for examples...** <--
 
-##TODO
-// TODO: Fix Bug: Ignore 'deploy_hosts' dict when deploying to dev environment..  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Dev: deploy on single host (requires to use unique ports across all configurations)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Prod: all good, leave it as it is..  
+## TODO
+// TODO: Fix Bug: Ignore 'deploy_hosts' dict when deploying to dev environment..
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Dev: deploy on single host (requires to use unique ports across all configurations)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Prod: all good, leave it as it is..
 // TODO: Review README, write more stuff, give examples on how it works etc.
