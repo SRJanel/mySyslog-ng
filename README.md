@@ -19,8 +19,8 @@ syslog-ng is supposed to be already installed on target servers (for now at leas
 
 **c.f. soc_streams.yml for examples...**
 
-
+##TODO
+// TODO: Fix Bug: Ignore 'deploy_hosts' dict when deploying to dev environment..  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Dev: deploy on single host (requires to use unique ports across all configurations)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Prod: all good, leave it as it is..  
 // TODO: Review README, write more stuff, give examples on how it works etc.
-// TODO: Fix Bug: Ignore 'deploy_hosts' dict when deploying to dev environment..
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Dev: deploy on single host (requires to use unique ports across all configurations)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-> Prod: all good, leave it as it is..
